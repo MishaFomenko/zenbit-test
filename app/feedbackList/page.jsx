@@ -26,9 +26,31 @@ export default function FeedbackList() {
   };
   useEffect(() => {
     fetchFeedbacks();
-  }, []);
+  }, [list]);
 
-  const deleteFeedback = () => {};
+  const deleteFeedback = async (event) => {
+    const url = `http://localhost:3001/${event.target.id}`;
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const response = await fetch(url, requestOptions);
+      if (response.ok) {
+        let newList = [...list];
+        let cleanList = newList.filter(
+          (element) => element.id !== event.target.id,
+        );
+        setList(cleanList);
+      } else {
+        throw new Error("Failed to submit data");
+      }
+    } catch (error) {
+      console.error("Error during data submission:", error);
+    }
+  };
 
   return (
     <>
@@ -39,7 +61,9 @@ export default function FeedbackList() {
             <p>Email: {element.email}</p>
             <p>Message: {element.message}</p>
             <p>Created at: {element.created_at}</p>
-            <button onClick={deleteFeedback}>Delete</button>
+            <button id={element.id} onClick={deleteFeedback}>
+              Delete
+            </button>
           </div>
         ))}
       </div>
