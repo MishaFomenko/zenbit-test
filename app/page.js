@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import styled from "styled-components";
+import Link from "next/link";
 
 const PageContainer = styled.div`
   display: flex;
@@ -109,10 +110,11 @@ const GreenPop = styled.div`
 
 const SocialIconsContainer = styled.footer`
   display: flex;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   height: 20vh; // Fixed to 10% of the viewport height
   background-color: #f0edec;
+  padding-left: 300px;
 `;
 
 const SocialIcon = styled.a`
@@ -129,14 +131,33 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const handleSubmit = () => {
+  async function handleSubmit() {
+    const url = "http://localhost:3001";
     const payload = {
       name,
       email,
       message,
     };
-    console.log(payload);
-  };
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    };
+    try {
+      const response = await fetch(url, requestOptions);
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Data submitted successfully:", responseData);
+        return responseData;
+      } else {
+        throw new Error("Failed to submit data");
+      }
+    } catch (error) {
+      console.error("Error during data submission:", error);
+    }
+  }
 
   return (
     <main style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -175,8 +196,9 @@ export default function Home() {
       </PageContainer>
       <SocialIconsContainer>
         <SocialIcon href="#" target="_blank">
-          <IconImage src="path_to_linkedin_icon.png" alt="LinkedIn" />
+          <IconImage src="#" alt="LinkedIn" />
         </SocialIcon>
+        <Link href="/feedbackList">View feedbacks</Link>
       </SocialIconsContainer>
     </main>
   );
