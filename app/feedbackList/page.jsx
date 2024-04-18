@@ -1,32 +1,13 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setList } from "../store/slices/listSlice";
+import Link from "next/link";
+import * as styles from "./styles";
 
 export default function FeedbackList() {
-  const [list, setList] = useState([]);
-
-  const fetchFeedbacks = async () => {
-    const url = "http://localhost:3001";
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      const response = await fetch(url, requestOptions);
-      if (response.ok) {
-        const responseData = await response.json();
-        setList(responseData);
-      } else {
-        throw new Error("Failed to submit data");
-      }
-    } catch (error) {
-      console.error("Error during data submission:", error);
-    }
-  };
-  useEffect(() => {
-    fetchFeedbacks();
-  }, [list]);
+  const list = useSelector((state) => state.list.list);
+  const dispatch = useDispatch();
 
   const deleteFeedback = async (event) => {
     const url = `http://localhost:3001/${event.target.id}`;
@@ -43,30 +24,71 @@ export default function FeedbackList() {
         let cleanList = newList.filter(
           (element) => element.id !== event.target.id,
         );
-        setList(cleanList);
+        dispatch(setList(cleanList));
       } else {
-        throw new Error("Failed to submit data");
+        throw new Error("Failed to delete a feedback");
       }
     } catch (error) {
-      console.error("Error during data submission:", error);
+      console.error("Error during deleting a feedback:", error);
     }
   };
 
+  const fetchFeedbacks = async () => {
+    const url = "http://localhost:3001";
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const response = await fetch(url, requestOptions);
+      if (response.ok) {
+        const responseData = await response.json();
+        dispatch(setList(responseData));
+      } else {
+        throw new Error("Failed to fetch feedbacks list");
+      }
+    } catch (error) {
+      console.error("Error during fetching feedbacks:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFeedbacks();
+  }, [list]);
+
   return (
     <>
-      <div>
-        {list.map((element) => (
-          <div key={element.id}>
-            <p>Name: {element.name}</p>
-            <p>Email: {element.email}</p>
-            <p>Message: {element.message}</p>
-            <p>Created at: {element.created_at}</p>
-            <button id={element.id} onClick={deleteFeedback}>
-              Delete
-            </button>
-          </div>
-        ))}
-      </div>
+      <Link href="/">
+        <styles.FeedbackLink>{"<< Back to form"}</styles.FeedbackLink>
+      </Link>
+      <styles.Container>
+        {list.length ? (
+          list.map((element) => (
+            <styles.FeedbackItem key={element.id}>
+              <styles.InfoParagraph>
+                <styles.BoldLabel>Name:</styles.BoldLabel> {element.name}
+              </styles.InfoParagraph>
+              <styles.InfoParagraph>
+                <styles.BoldLabel>Email:</styles.BoldLabel> {element.email}
+              </styles.InfoParagraph>
+              <styles.InfoParagraph>
+                <styles.BoldLabel>Message:</styles.BoldLabel> {element.message}
+              </styles.InfoParagraph>
+              <styles.InfoParagraph>
+                <styles.BoldLabel>Created at:</styles.BoldLabel>{" "}
+                {element.created_at}
+              </styles.InfoParagraph>
+              <styles.DeleteButton id={element.id} onClick={deleteFeedback}>
+                Delete
+              </styles.DeleteButton>
+            </styles.FeedbackItem>
+          ))
+        ) : (
+          <div>No feedbacks yet</div>
+        )}
+      </styles.Container>
     </>
   );
 }

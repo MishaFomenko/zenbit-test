@@ -1,135 +1,14 @@
 "use client";
-import { useState } from "react";
-import styled from "styled-components";
+import * as styles from "./styles";
 import Link from "next/link";
-
-const PageContainer = styled.div`
-  display: flex;
-  justify-content: space-between; // Ensures items are spaced out
-  align-items: stretch; // Stretches items to fill the container
-  min-height: 80vh; // Takes up 90% of the viewport height
-  padding: 20px;
-  background-color: white;
-`;
-
-const FormContainer = styled.div`
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
-
-const Input = styled.input`
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  width: 50%;
-`;
-
-const TextArea = styled.textarea`
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  resize: vertical;
-  width: 50%;
-`;
-
-const Button = styled.button`
-  padding: 10px 20px;
-  background-color: #ffa500;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  width: 50%;
-`;
-
-const MapContainer = styled.div`
-  width: 60%;
-  height: 600px; // Adjust based on your content needs
-  background: url("map.svg") no-repeat center center;
-  background-size: contain;
-  position: relative;
-  right: -10%; // Allows the map to extend beyond the page limit
-  overflow: visible;
-`;
-
-const RedPop = styled.div`
-  width: 200px;
-  height: 200px;
-  background: url("circle_pink_1.svg") no-repeat center center;
-  position: absolute;
-  background-size: contain;
-  top: 40%;
-  left: 65%;
-  z-index: 2;
-`;
-
-const RedPop2 = styled(RedPop)`
-  top: 75%;
-  left: 5%;
-`;
-
-const YellowPop1 = styled(RedPop)`
-  width: 100px;
-  height: 100px;
-  background: url("circle_yellow_1.svg") no-repeat center center;
-  top: 2%;
-  left: 2%;
-`;
-
-const YellowPop2 = styled(RedPop)`
-  width: 80px;
-  height: 80px;
-  background: url("circle_yellow_2.svg") no-repeat center center;
-  position: absolute;
-  background-size: contain;
-  top: 38%;
-  left: 66%;
-  z-index: 3;
-`;
-
-const YellowPop3 = styled(YellowPop1)`
-  top: 85%;
-  left: 92%;
-`;
-
-const GreenPop = styled.div`
-  width: 100px;
-  height: 100px;
-  background: url("circle_green_1.svg") no-repeat center center;
-  position: absolute;
-  background-size: contain;
-  top: 80.5%;
-  left: 80%;
-  z-index: 2;
-`;
-
-const SocialIconsContainer = styled.footer`
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  height: 20vh; // Fixed to 10% of the viewport height
-  background-color: #f0edec;
-  padding-left: 300px;
-`;
-
-const SocialIcon = styled.a`
-  margin: 0 10px;
-`;
-
-const IconImage = styled.img`
-  width: 24px;
-  height: 24px;
-`;
+import { useSelector, useDispatch } from "react-redux";
+import { setName, setEmail, setMessage } from "./store/slices/formSlice";
 
 export default function Home() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const name = useSelector((state) => state.form.name);
+  const email = useSelector((state) => state.form.email);
+  const message = useSelector((state) => state.form.message);
+  const dispatch = useDispatch();
 
   async function handleSubmit() {
     const url = "http://localhost:3001";
@@ -148,58 +27,71 @@ export default function Home() {
     try {
       const response = await fetch(url, requestOptions);
       if (response.ok) {
-        const responseData = await response.json();
-        console.log("Data submitted successfully:", responseData);
-        return responseData;
+        console.log("Data submitted successfully:", response);
+        dispatch(setName(""));
+        dispatch(setEmail(""));
+        dispatch(setMessage(""));
+        return response;
       } else {
-        throw new Error("Failed to submit data");
+        throw new Error("Failed to submit feedback data");
       }
     } catch (error) {
-      console.error("Error during data submission:", error);
+      console.error("Error during feedback data submission:", error);
     }
   }
 
   return (
     <main style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      <PageContainer>
-        <RedPop />
-        <RedPop2 />
-        <YellowPop1 />
-        <YellowPop2 />
-        <YellowPop3 />
-        <GreenPop />
-        <FormContainer>
+      <styles.PageContainer>
+        <styles.RedPop />
+        <styles.RedPop2 />
+        <styles.YellowPop1 />
+        <styles.YellowPop2 />
+        <styles.YellowPop3 />
+        <styles.GreenPop />
+        <styles.FormContainer>
           <h1>Reach out to us!</h1>
-          <Input
+          <styles.Input
             type="text"
             placeholder="Your name*"
             required
             value={name}
-            onChange={(event) => setName(event.target.value)}
+            onChange={(event) => dispatch(setName(event.target.value))}
           />
-          <Input
+          <styles.Input
             type="email"
             placeholder="Your e-mail*"
             required
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => dispatch(setEmail(event.target.value))}
           />
-          <TextArea
+          <styles.TextArea
             placeholder="Your message*"
             required
             value={message}
-            onChange={(event) => setMessage(event.target.value)}
+            onChange={(event) => dispatch(setMessage(event.target.value))}
           />
-          <Button onClick={handleSubmit}>Send message</Button>
-        </FormContainer>
-        <MapContainer />
-      </PageContainer>
-      <SocialIconsContainer>
-        <SocialIcon href="#" target="_blank">
-          <IconImage src="#" alt="LinkedIn" />
-        </SocialIcon>
-        <Link href="/feedbackList">View feedbacks</Link>
-      </SocialIconsContainer>
+          <styles.Button onClick={handleSubmit}>Send message</styles.Button>
+        </styles.FormContainer>
+        <styles.MapContainer />
+      </styles.PageContainer>
+      <styles.SocialIconsContainer>
+        <styles.SocialIcon href="#" target="_blank">
+          <styles.IconImage src="linkedin_icon.svg" alt="LinkedIn" />
+        </styles.SocialIcon>
+        <styles.SocialIcon href="#" target="_blank">
+          <styles.IconImage src="fb_icon.svg" alt="FaceBook" />
+        </styles.SocialIcon>
+        <styles.SocialIcon href="#" target="_blank">
+          <styles.IconImage src="twitter_icon.svg" alt="Twitter" />
+        </styles.SocialIcon>
+        <styles.SocialIcon href="#" target="_blank">
+          <styles.IconImage src="pinterest_icon.svg" alt="Pinterest" />
+        </styles.SocialIcon>
+        <Link href="/feedbackList">
+          <styles.FeedbackLink>View feedbacks</styles.FeedbackLink>
+        </Link>
+      </styles.SocialIconsContainer>
     </main>
   );
 }
