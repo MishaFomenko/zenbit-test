@@ -11,7 +11,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   async function handleSubmit() {
-    const url = `http://${process.env.NEXT_PUBLIC_BACKEND_IP}:${process.env.NEXT_PUBLIC_BACKEND_PORT}`;
+    const url = `/api`;
     const payload = {
       name,
       email,
