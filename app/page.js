@@ -11,7 +11,7 @@ export default function Home() {
   const dispatch = useDispatch();
 
   async function handleSubmit() {
-    const url = "http://localhost:3001";
+    const url = `http://${process.env.BACKEND_IP}`;
     const payload = {
       name,
       email,
@@ -89,7 +89,7 @@ export default function Home() {
           <styles.IconImage src="pinterest_icon.svg" alt="Pinterest" />
         </styles.SocialIcon>
         <Link href="/feedbackList">
-          <styles.FeedbackLink>View feedbacks</styles.FeedbackLink>
+          <styles.FeedbackLink>View list of feedbacks</styles.FeedbackLink>
         </Link>
       </styles.SocialIconsContainer>
     </main>

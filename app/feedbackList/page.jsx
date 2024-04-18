@@ -10,7 +10,7 @@ export default function FeedbackList() {
   const dispatch = useDispatch();
 
   const deleteFeedback = async (event) => {
-    const url = `http://localhost:3001/${event.target.id}`;
+    const url = `http://${process.env.BACKEND_IP}/${event.target.id}`;
     const requestOptions = {
       method: "DELETE",
       headers: {
@@ -34,7 +34,7 @@ export default function FeedbackList() {
   };
 
   const fetchFeedbacks = async () => {
-    const url = "http://localhost:3001";
+    const url = `http://${process.env.BACKEND_IP}`;
     const requestOptions = {
       method: "GET",
       headers: {
@@ -60,9 +60,7 @@ export default function FeedbackList() {
 
   return (
     <>
-      <Link href="/">
-        <styles.FeedbackLink>{"<< Back to form"}</styles.FeedbackLink>
-      </Link>
+      <Link href="/">{"<< Back to form"}</Link>
       <styles.Container>
         {list.length ? (
           list.map((element) => (
