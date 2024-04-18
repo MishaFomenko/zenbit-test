@@ -40,15 +40,15 @@ export const FeedbackLink = styled.div`
   width: 130px;
   padding: 10px 15px;
   margin: 10px 20px;
-  background-color: #4a90e2; // A noticeable blue background
-  color: white; // White text for contrast
-  text-decoration: none; // Remove underline
-  border-radius: 5px; // Rounded corners
-  font-weight: bold; // Make font bold
-  transition: background-color 0.3s; // Smooth transition for hover effect
+  background-color: #4a90e2;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #357abd; // Darker blue on hover
-    text-decoration: none; // Remove underline
+    background-color: #357abd;
+    text-decoration: none;
   }
 `;
