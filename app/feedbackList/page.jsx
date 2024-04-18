@@ -10,7 +10,7 @@ export default function FeedbackList() {
   const dispatch = useDispatch();
 
   const deleteFeedback = async (event) => {
-    const url = `http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}/${event.target.id}`;
+    const url = `http://${process.env.NEXT_PUBLIC_BACKEND_IP}:${process.env.NEXT_PUBLIC_BACKEND_PORT}/${event.target.id}`;
     const requestOptions = {
       method: "DELETE",
       headers: {
@@ -34,7 +34,7 @@ export default function FeedbackList() {
   };
 
   const fetchFeedbacks = async () => {
-    const url = `http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}`;
+    const url = `http://${process.env.NEXT_PUBLIC_BACKEND_IP}:${process.env.NEXT_PUBLIC_BACKEND_PORT}`;
     const requestOptions = {
       method: "GET",
       headers: {
